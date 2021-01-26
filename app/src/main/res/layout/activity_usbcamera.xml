@@ -4,95 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff000000"
+    android:background="#00000000"
     tools:context=".view.USBCameraActivity"
     tools:ignore="MergeRootFrame">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:navigationIcon="@null"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar">
+        android:layout_height="match_parent">
 
-        <com.serenegiant.usb.widget.UVCCameraTextureView
-            android:id="@+id/camera_view"
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/pi"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:indicatorColor="#919090" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.serenegiant.usb.widget.UVCCameraTextureView
+                android:id="@+id/camera_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center|left"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="20" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="30">
+
+                <ImageButton
+                    android:id="@+id/btn_fore"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:background="@menu/round_button" />
+            </FrameLayout>
+
+        </LinearLayout>
+
     </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/llayout_contrast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="7dp"
-            android:paddingTop="7dp"
-            android:text="对比度(contrast)"
-            android:textColor="@color/colorWhite" />
-
-        <SeekBar
-            android:id="@+id/seekbar_contrast"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llayout_brightness"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/llayout_contrast"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="7dp"
-            android:paddingTop="7dp"
-            android:text="亮度(brightness)"
-            android:textColor="@color/colorWhite" />
-
-        <SeekBar
-            android:id="@+id/seekbar_brightness"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-    </LinearLayout>
-
-    <Switch
-        android:id="@+id/switch_rec_voice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/llayout_brightness"
-        android:layout_alignStart="@+id/llayout_brightness"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="27dp"
-        android:checked="false"
-        android:text="closeVoice"
-        android:textColor="@color/colorWhite" />
 
 </RelativeLayout>
