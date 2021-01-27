@@ -13,6 +13,7 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -58,7 +59,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     public View mTextureView;
 
     @BindView(R.id.btn_fore)
-    public MaterialButton mBtn;
+    public Button mBtn;
 
     @BindView(R.id.pi)
     public CircularProgressIndicator pi;
