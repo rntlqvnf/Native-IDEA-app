@@ -22,6 +22,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.jiangdg.usbcamera.R;
 import com.jiangdg.usbcamera.UVCCameraHelper;
 import com.jiangdg.usbcamera.application.MyApplication;
@@ -56,10 +58,10 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     public View mTextureView;
 
     @BindView(R.id.btn_fore)
-    public ImageButton mBtn;
+    public MaterialButton mBtn;
 
     @BindView(R.id.pi)
-    public com.google.android.material.progressindicator.CircularProgressIndicator pi;
+    public CircularProgressIndicator pi;
 
     private UVCCameraHelper mCameraHelper;
     private CameraViewInterface mUVCCameraView;
