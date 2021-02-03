@@ -26,7 +26,7 @@ public class HttpAsynTask extends AsyncTask<String, Void, Void> {
 
     @Override
     public Void doInBackground(String... params) {
-        String uri = "http://10.0.2.2:5000/emotion";
+        String uri = "http://10.0.2.2:5000/recommend";
 
         try {
             URL url = new URL(uri);
@@ -43,6 +43,7 @@ public class HttpAsynTask extends AsyncTask<String, Void, Void> {
             String encodedImage = encodeImageToBase64(params[0]);
             JSONObject json = new JSONObject();
             json.put("image", encodedImage);
+            json.put("path", params[1]);
             OutputStream outputStream = conn.getOutputStream();
             outputStream.write(json.toString().getBytes("UTF-8"));
             outputStream.flush();
@@ -64,7 +65,6 @@ public class HttpAsynTask extends AsyncTask<String, Void, Void> {
             ex.printStackTrace();
             exception = ex;
         }
-
         return null;
     }
 

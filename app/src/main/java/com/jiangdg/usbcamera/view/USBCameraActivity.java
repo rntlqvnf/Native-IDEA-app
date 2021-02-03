@@ -1,6 +1,7 @@
 package com.jiangdg.usbcamera.view;
 
 import android.hardware.usb.UsbDevice;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -70,6 +71,26 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
 
     private boolean isRequest;
     private boolean isPreview;
+
+    private HttpAsynTackCallback callback = new HttpAsynTackCallback() {
+        @Override
+        public void onSuccess(JSONObject result) {
+            pi.setVisibility(View.INVISIBLE);
+            /*
+            moveTaskToBack(true);
+            if (Build.VERSION.SDK_INT >= 21) {
+                finishAndRemoveTask();
+            } else {
+                finish();
+            } */
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            e.printStackTrace();
+            showShortMsg("Server connection failed. Please check internet connection.");
+        }
+    };
 
     private UVCCameraHelper.OnMyDevConnectListener listener = new UVCCameraHelper.OnMyDevConnectListener() {
 
@@ -177,46 +198,46 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     @OnClick(R.id.btn_fore)
     void pick()
     {
-        HttpAsynTackCallback callback = new HttpAsynTackCallback() {
-            @Override
-            public void onSuccess(JSONObject result) {
-                pi.setVisibility(View.INVISIBLE);
-                System.out.println(result.toString());
-                //TODO: TCP/IP to front-ended app
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                e.printStackTrace();
-                showShortMsg("Server connection failed. Please check internet connection.");
-            }
-        };
-
         pi.setVisibility(View.GONE);
 
-        if (mCameraHelper == null || !mCameraHelper.isCameraOpened()) {
-            new HttpAsynTask(callback).execute("/storage/sdcard/Download/input.jpg"); //for debug
-            return;
-        }
-
+        String resourcePath = UVCCameraHelper.ROOT_PATH + MyApplication.RESOURCE_DIRECTORY_NAME;
         String picPath = UVCCameraHelper.ROOT_PATH + MyApplication.DIRECTORY_NAME +"/images/"
                 + System.currentTimeMillis() + UVCCameraHelper.SUFFIX_JPEG;
+        String debugPicPath = "/storage/sdcard/Download/input.jpg";
 
-        mCameraHelper.capturePicture(picPath, new AbstractUVCCameraHandler.OnCaptureListener() {
-            @Override
-            public void onCaptureResult(String path) {
-                if(TextUtils.isEmpty(path)) {
-                    return;
-                }
-                new Handler(getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(USBCameraActivity.this, "Analyzing...", Toast.LENGTH_SHORT).show();
-                        new HttpAsynTask(callback).execute(path);
+        if (mCameraHelper == null || !mCameraHelper.isCameraOpened()) {
+            doHttpAsyncTask(debugPicPath, resourcePath, "Debug mode on", "No server connection");
+        }
+        else {
+            mCameraHelper.capturePicture(picPath, new AbstractUVCCameraHandler.OnCaptureListener() {
+                @Override
+                public void onCaptureResult(String path) {
+                    if(TextUtils.isEmpty(path)) {
+                        return;
                     }
-                });
-            }
-        });
+                    new Handler(getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            doHttpAsyncTask(path, resourcePath, "Analyzing...", "No server connection");
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    void doHttpAsyncTask(String picPath, String resourcePath, String startToastMsg, String endToastMsg)
+    {
+        Toast.makeText(USBCameraActivity.this, startToastMsg, Toast.LENGTH_SHORT).show();
+        try {
+            new HttpAsynTask(callback).execute(picPath, resourcePath); //for debug
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Toast.makeText(USBCameraActivity.this, endToastMsg, Toast.LENGTH_SHORT).show();
+        }
+        return;
     }
 
     // example: {640x480,320x240,etc}

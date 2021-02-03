@@ -14,6 +14,7 @@ public class MyApplication extends Application {
     private CrashHandler mCrashHandler;
     // File Directory in sd card
     public static final String DIRECTORY_NAME = "USBCamera";
+    public static final String RESOURCE_DIRECTORY_NAME = "Resources";
 
     @Override
     public void onCreate() {
