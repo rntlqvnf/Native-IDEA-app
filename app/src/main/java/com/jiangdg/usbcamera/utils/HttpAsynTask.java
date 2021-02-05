@@ -26,11 +26,10 @@ public class HttpAsynTask extends AsyncTask<String, Void, Void> {
 
     @Override
     public Void doInBackground(String... params) {
-        String uri = "http://10.0.2.2:5000/recommend";
+        String uri = "http://" + ServerSetting.httpHost + ":" + ServerSetting.httpPort + "/recommend";
 
         try {
             URL url = new URL(uri);
-            String result = "";
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept-Charset","UTF-8");

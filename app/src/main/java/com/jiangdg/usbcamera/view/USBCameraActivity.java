@@ -32,6 +32,7 @@ import com.jiangdg.usbcamera.application.MyApplication;
 import com.jiangdg.usbcamera.utils.FileUtils;
 import com.jiangdg.usbcamera.utils.HttpAsynTackCallback;
 import com.jiangdg.usbcamera.utils.HttpAsynTask;
+import com.jiangdg.usbcamera.utils.SocketThread;
 import com.serenegiant.usb.CameraDialog;
 import com.serenegiant.usb.Size;
 import com.serenegiant.usb.USBMonitor;
@@ -76,6 +77,8 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
         @Override
         public void onSuccess(JSONObject result) {
             pi.setVisibility(View.INVISIBLE);
+            SocketThread thread = new SocketThread(result);
+            thread.start();
             /*
             moveTaskToBack(true);
             if (Build.VERSION.SDK_INT >= 21) {
@@ -277,7 +280,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     @Override
     public void onDialogResult(boolean canceled) {
         if (canceled) {
-            showShortMsg("取消操作");
+            showShortMsg("Complete");
         }
     }
 
