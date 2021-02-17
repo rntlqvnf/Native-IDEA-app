@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,22 +77,29 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     private HttpAsynTackCallback callback = new HttpAsynTackCallback() {
         @Override
         public void onSuccess(JSONObject result) {
-            pi.setVisibility(View.INVISIBLE);
-            SocketThread thread = new SocketThread(result);
+            SocketThread thread = new SocketThread(result, mHandler);
             thread.start();
-            /*
-            moveTaskToBack(true);
-            if (Build.VERSION.SDK_INT >= 21) {
-                finishAndRemoveTask();
-            } else {
-                finish();
-            } */
         }
 
         @Override
         public void onFailure(Exception e) {
             e.printStackTrace();
             showShortMsg("Server connection failed. Please check internet connection.");
+        }
+    };
+
+    private Handler mHandler = new Handler(){
+        public void handleMessage(Message msg) {
+            pi.setVisibility(View.INVISIBLE);
+            if(msg.what == 1) {
+                showShortMsg("Successfully send.");
+            }
+            else{
+                showShortMsg("Send failed. Please check internet connection");
+            }
+            /***
+             * IF NEEDS, TURN OFF APP
+             */
         }
     };
 
@@ -178,6 +186,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     @Override
     protected void onStart() {
         super.onStart();
+        pi.setVisibility(View.INVISIBLE);
         // step.2 register USB event broadcast
         if (mCameraHelper != null) {
             mCameraHelper.registerUSB();
@@ -201,7 +210,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     @OnClick(R.id.btn_fore)
     void pick()
     {
-        pi.setVisibility(View.GONE);
+        pi.setVisibility(View.VISIBLE);
 
         String resourcePath = UVCCameraHelper.ROOT_PATH + MyApplication.RESOURCE_DIRECTORY_NAME;
         String picPath = UVCCameraHelper.ROOT_PATH + MyApplication.DIRECTORY_NAME +"/images/"
@@ -294,6 +303,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
             mCameraHelper.startPreview(mUVCCameraView);
             isPreview = true;
         }
+        pick();
     }
 
     @Override
