@@ -58,6 +58,7 @@ public class HttpAsynTask extends AsyncTask<String, Void, Void> {
             }
 
             response = new JSONObject(page);
+            System.out.println(response);
             conn.disconnect();
         } catch (Exception ex)
         {

@@ -1,5 +1,7 @@
 package com.jiangdg.usbcamera.view;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.usb.UsbDevice;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,6 +46,7 @@ import com.serenegiant.usb.widget.CameraViewInterface;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +70,9 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
 
     @BindView(R.id.pi)
     public CircularProgressIndicator pi;
+
+    @BindView(R.id.imageView)
+    public ImageView iv;
 
     private UVCCameraHelper mCameraHelper;
     private CameraViewInterface mUVCCameraView;
@@ -91,6 +98,8 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     private Handler mHandler = new Handler(){
         public void handleMessage(Message msg) {
             pi.setVisibility(View.INVISIBLE);
+            mTextureView.setVisibility(View.VISIBLE);
+            iv.setVisibility(View.INVISIBLE);
             if(msg.what == 1) {
                 showShortMsg("Successfully send.");
             }
@@ -136,6 +145,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
                 showShortMsg("connecting");
                 // initialize seekbar
                 // need to wait UVCCamera initialize over
+                Handler pickHandler = new Handler(getMainLooper());
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -144,8 +154,12 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        Looper.prepare();
-                        Looper.loop();
+                        pickHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pick();
+                                }
+                        });
                     }
                 }).start();
             }
@@ -218,6 +232,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
         String debugPicPath = "/storage/sdcard/Download/input.jpg";
 
         if (mCameraHelper == null || !mCameraHelper.isCameraOpened()) {
+            showCapturedImage(debugPicPath);
             doHttpAsyncTask(debugPicPath, resourcePath, "Debug mode on", "No server connection");
         }
         else {
@@ -236,6 +251,16 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
                 }
             });
         }
+    }
+
+    void showCapturedImage(String picPath)
+    {
+        File imgFile = new  File(picPath);
+        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        iv.setImageBitmap(myBitmap);
+
+        mTextureView.setVisibility(View.INVISIBLE);
+        iv.setVisibility(View.VISIBLE);
     }
 
     void doHttpAsyncTask(String picPath, String resourcePath, String startToastMsg, String endToastMsg)
@@ -303,7 +328,6 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
             mCameraHelper.startPreview(mUVCCameraView);
             isPreview = true;
         }
-        pick();
     }
 
     @Override
