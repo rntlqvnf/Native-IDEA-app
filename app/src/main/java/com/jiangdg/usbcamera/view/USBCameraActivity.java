@@ -106,9 +106,9 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
             else{
                 showShortMsg("Send failed. Please check internet connection");
             }
-            /***
-             * IF NEEDS, TURN OFF APP
-             */
+            moveTaskToBack(true);
+            finish();
+            System.exit(0);
         }
     };
 
